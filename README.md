@@ -2,10 +2,10 @@
 
 ## Saliency Maps
 Exemple pour un 7 en input :     
-input     
-![input](https://github.com/antoineDulhoste/TP-IHMxIA-Interpretable-DRL/blob/main/IHMxIA/images/input_0.jpg =250x250)         
-Saliency      
-![Saliency](https://github.com/antoineDulhoste/TP-IHMxIA-Interpretable-DRL/blob/main/IHMxIA/images/saliency_0.jpg =250x250)      
+input
+<img src="https://github.com/antoineDulhoste/TP-IHMxIA-Interpretable-DRL/blob/main/IHMxIA/images/input_0.jpg" alt="drawing" width="250" length="250"/>           
+Saliency 
+<img src="https://github.com/antoineDulhoste/TP-IHMxIA-Interpretable-DRL/blob/main/IHMxIA/images/saliency_0.jpg" alt="drawing" width="250" length="250"/>   
 
 ##  Contributeurs
 Antoine DULHOSTE – p1606751 – antoine.dulhoste@etu.univ-lyon1.fr  
