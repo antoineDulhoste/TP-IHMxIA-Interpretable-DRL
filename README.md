@@ -12,6 +12,9 @@ Saliency d'un agent jouant a doomviz :
 
 ## Projection Umap
 
+Image de la projection avec les distances de base
+
+<img src="https://github.com/antoineDulhoste/TP-IHMxIA-Interpretable-DRL/blob/main/IHMxIA/images/projection.PNG" alt="drawing" width="100" length="100"/> 
 
 
 ##  Contributeurs
