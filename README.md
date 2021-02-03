@@ -1,5 +1,9 @@
 # TP-IHMxIA-Interpretable-DRL
 
+## Pour executer le code
+
+python run.py
+
 ## Saliency Maps
 Exemple pour un 7 en input sur le dataset de mnist :     
 input   
