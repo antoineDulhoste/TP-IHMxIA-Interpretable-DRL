@@ -47,14 +47,14 @@
 
 
     async function plot(svg, data) {
-        let [x, y] = await new Promise(res => res(get_scales(data.map(d => [d["x"], d["y"]]))));
+        let [x, y] = await new Promise(res => res(get_scales(data.map(d => [parseFloat(d["x"]), parseFloat(d["y"])]))));
 
 
         let colScale = function (d) {
             return "steelblue"
         }
 
-        if (data[0]["args"]) {
+        if (data.columns.length == 3) {
             let mapped = data.map(d => d["arg"])
             let temp = getUnique(mapped)
 
@@ -75,11 +75,8 @@
             .append("circle")
             .attr("class", "point")
             .attr("r", 6)
-            .attr("cx", d => {
-                console.log(d);
-                console.log(d["x"]);
-                return x(d["x"])})
-            .attr("cy", d => y(d['y']))
+            .attr("cx", d => x(parseFloat(d["x"])))
+            .attr("cy", d => y(parseFloat(d["y"])))
             .attr("fill", d => colScale(d["arg"]))
             .attr("stroke", "rgba(19,19,19,0.51)")
             .attr("stroke-width", "1")
@@ -87,8 +84,9 @@
     }
 
     get_scales = function (data) {
-        let x_extent = d3.extent(data, d => d[0]);
-        let y_extent = d3.extent(data, d => d[1]);
+        let x_extent = d3.extent(data, d => parseFloat(d[0]));
+        let y_extent = d3.extent(data, d => parseFloat(d[1]));  
+
         let x_span = x_extent[1] - x_extent[0];
         let y_span = y_extent[1] - y_extent[0];
         const offset = Math.abs(x_span - y_span) / 2;

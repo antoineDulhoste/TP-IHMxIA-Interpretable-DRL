@@ -48,30 +48,29 @@ class DQNAgent:
     def get_best_action_wGrad(self, state):
         state = torch.from_numpy(state).to(device)
 
-        ###############
         state.requires_grad = True
         for param in self.model.parameters():
             param.requires_grad = False
-        ###############
 
-        q = self.model(state)
-
+        q, latent = self.model(state)
+        
         m, index = torch.max(q, 1)
         action = index.item()
 
-        ###############
         target = torch.zeros(q.shape)
         target[:, index] = 1
-        print(target)
+        
+        q = torch.nn.Softmax()(q)
         q.backward(gradient=target)
-
-        grads = state.grad.squeeze(0).squeeze(0).numpy()
+        
+        grads = state.grad[0, 0, :, :].numpy()
         state.detach_()
 
         grads[grads < 0] = 0
-        ###############
 
         grads *= 254
         grads = grads.astype(np.int8)
 
-        return action, grads.transpose((1, 0))
+
+
+        return action, grads.transpose((1, 0)), latent

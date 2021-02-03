@@ -4,6 +4,7 @@ from PIL import Image, ImageFilter, ImageEnhance
 
 from agent import DQNAgent
 from env import DoomEnv
+from utils import embedding2csv
 import numpy as np
 
 from moviepy.editor import ImageSequenceClip
@@ -22,7 +23,7 @@ def parsearg():
     parser.add_argument('--scenario', type=str, default="basic", help='vizdoom scenario')
     parser.add_argument('--test_mod', type=bool, default=False, help=' test or train model')
 
-    parser.add_argument('--n_epochs', type=int, default=1, help='number of epochs of training')
+    parser.add_argument('--n_epochs', type=int, default=10, help='number of epochs of training')
     parser.add_argument('--learning_steps_per_epoch', type=int, default=2000, help='number of steps per epoch')
     parser.add_argument('--batch_size', type=int, default=64, help='size of the batches')
     parser.add_argument('--lr', type=float, default=0.00025, help='adam: learning rate')
@@ -43,17 +44,20 @@ def parsearg():
 
 def run():
     print("Making videos")
+    imgs = []
+    mydata = []
+    mydata2 = []
     for epoch in range(args.n_epochs):
         env.game.new_episode()
-        print("\nEpisode %d\n-------" % (epoch + 1))
-        imgs = []
-
+        print("\nEpisode %d\n-------" % (epoch + 1))  
         while not env.game.is_episode_finished():
             state = env.get_state()
 
             # TODO: Change this function to return a correct grad
-            best_action_index, grads = agent.get_best_action_wGrad(state)
-
+            best_action_index, grads, last_layer = agent.get_best_action_wGrad(state)
+            last_layer = last_layer.squeeze(0).detach().numpy()
+            mydata.append(last_layer)
+            mydata2.append(best_action_index)
             env.game.make_action(agent.actions[best_action_index], args.frame_repeat)
             state = np.squeeze(state)
 
@@ -66,16 +70,12 @@ def run():
             saliency = Image.fromarray(grads, 'L')
             saliency.save("images/saliency_" + str(nb) + ".jpg")
 
-            grads = format_saliency(saliency)
-
-            # If You want to enhance this display you can do
-            # grads =  format_saliency_bprop(img)
-
+            grads =  format_saliency_bprop(saliency)
             imgs.append(merge_img(state, grads, nb))
-
+              
     make_movie(imgs, "video/video_" + str(epoch + 1) + ".mp4")
-
-
+    embedding = umap.UMAP(n_neighbors=5, min_dist=0.3, metric='correlation').fit_transform(mydata)
+    embedding2csv(embedding, mydata2)
 def make_movie(imgs, filename):
     clip = ImageSequenceClip(imgs, fps=int(30 / args.frame_repeat))
     clip.write_videofile(filename)

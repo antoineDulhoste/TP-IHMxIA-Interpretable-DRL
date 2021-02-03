@@ -60,41 +60,42 @@ def test(model, device, test_loader):
 
         data.requires_grad = True
         output = model(data)
-        one_hot=torch.FloatTensor(1,10).zero_().to(device)
-        one_hot[0][target]=1
-        print(torch.argmax(one_hot).item())
+
+        one_hot = torch.FloatTensor(1, 10).zero_().to(device)
+        one_hot[0][target] = 1
+
         output.backward(gradient=one_hot)
-        grads=data.grad.clone()
+
+        grads = data.grad.clone()
         grads.squeeze_(0)
-        grads.transpose_(0,1)
-        grads.transpose_(1, 2)
-        grads = np.amax(grads.cpu().numpy(),axis=2)
-        #norm
-        grads-= grads.min()
+        grads = grads.permute(1,2,0)
+
+        grads = np.amax(grads.cpu().numpy(), axis=2)
+
+        # Normalisation
+        grads -= grads.min()
         grads /= grads.max()
         grads *= 254
-        #conv to image
-        grads=grads.astype(np.int8)
-        grads[grads<0]=0
-        print(grads)
+        # converstion vers image
+        grads = grads.astype(np.int8)
         saliency = Image.fromarray(grads, 'L')
         saliency.save("images/saliency_" + str(i) + ".jpg")
 
         data.detach_().squeeze_()
-        data-=data.min()
+        data = data.cpu().numpy()
+        data -= data.min()
         data /= data.max()
-        data*=254
-        data= data.numpy()
+        data *= 254
         data = data.astype(np.int8)
         inp = Image.fromarray(data, 'L')
         inp.save("images/input_" + str(i) + ".jpg")
 
         grads = format_saliency(saliency)
-
         imgs.append(merge_img(data, grads, i))
 
         i += 1
-        if i==10:
+
+        if i > 0:
             break
 
 
