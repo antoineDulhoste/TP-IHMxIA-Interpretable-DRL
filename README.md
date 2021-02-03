@@ -8,9 +8,7 @@ Saliency
 <img src="https://github.com/antoineDulhoste/TP-IHMxIA-Interpretable-DRL/blob/main/IHMxIA/images/saliency_rm.jpg" alt="drawing" width="100" length="100"/>   
 Ici on peut voir que l'agent se concentre sur le contour du 7 pour l'identifier.       
 Saliency d'un agent jouant a doomviz :       
-<video width="224" height="128" autoplay loop>
-  <source src="https://github.com/antoineDulhoste/TP-IHMxIA-Interpretable-DRL/blob/main/IHMxIA/video/video_rm.mp4" type="video/mp4" />
-</video>
+<img src="https://github.com/antoineDulhoste/TP-IHMxIA-Interpretable-DRL/blob/main/IHMxIA/video/video_rm.gif" alt="drawing" width="224" length="128"/>   
 
 ## Projection Umap
 
